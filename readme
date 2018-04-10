@@ -1,3 +1,9 @@
 using:
 1) apache maven 3.5.3
 2) apache tomcat 7.0.35
+
+Fonti consultate:
+1) teoria http://www.html.it/pag/19612/differenze-tra-web-service-rest-e-soap/
+2) teoria+tutorial https://docs.oracle.com/javaee/6/tutorial/doc/gijqy.html
+3) tutorial https://medium.com/@jamsesso/starting-out-with-jersey-apache-tomcat-using-intellij-6338d93ffd40
+4) tutorial http://www.mkyong.com/webservices/jax-rs/jersey-hello-world-example/
