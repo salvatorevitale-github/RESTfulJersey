@@ -3,10 +3,7 @@ package it.salvo.example;
 import com.sun.jersey.api.container.httpserver.HttpServerFactory;
 import com.sun.net.httpserver.HttpServer;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import java.io.IOException;
 
 /**
@@ -27,10 +24,11 @@ public class SpaceREST {
 
     @DELETE
     // The Java method will produce content identified by the MIME Media type "text/plain"
+    @Path("/{param}")
     @Produces("text/plain")
-    public String deleteSpace() {
+    public String deleteSpace(@PathParam("param") String msg) {
         // Return some cliched textual content
-        return "Clean space";
+        return "Clean space: "+msg;
     }
 
 
@@ -39,7 +37,7 @@ public class SpaceREST {
         server.start();
 
         System.out.println("Server running");
-        System.out.println("Visit: http://localhost:9998/helloworld");
+        System.out.println("Visit: http://localhost:9998/space/2");
         System.out.println("Hit return to stop...");
         System.in.read();
         System.out.println("Stopping server");
