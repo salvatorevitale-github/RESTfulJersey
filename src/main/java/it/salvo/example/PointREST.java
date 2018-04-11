@@ -15,19 +15,22 @@ import java.io.IOException;
 @Path("/point")
 public class PointREST {
 
-    // The Java method will process HTTP GET requests
     @POST
-    // The Java method will produce content identified by the MIME Media type "text/plain"
     @Produces("text/plain")
     public String getClichedMessage() {
-        // Return some cliched textual content
         return "Insert point";
     }
+
+/*    @POST
+    @Path("/{param}")
+    @Produces("text/plain")
+    public String getClichedMessage(@PathParam("param") String coordinate) {
+        return "Insert point: "+coordinate;
+    }*/
 
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServerFactory.create("http://localhost:9998/");
         server.start();
-
         System.out.println("Server running");
         System.out.println("Visit: http://localhost:9998/helloworld");
         System.out.println("Hit return to stop...");
