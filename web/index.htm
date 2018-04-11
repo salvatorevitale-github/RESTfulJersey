@@ -8,8 +8,12 @@
     <script type="application/javascript">
 
         function insertPoint(){
+            var data = {};
+            data.x = $('#x').val();
+            data.y  = $('#y').val();
             var method = 'POST';
             var restApi = "localhost:8080/rest/point";
+            //var restApi = "localhost:8080/rest/point/"+JSON.stringify(data);
             call(method, restApi);
         }
 
@@ -21,18 +25,19 @@
 
         function cleanSpace(){
             var method = 'DELETE';
-            var restApi = "localhost:8080/rest/space";
+            var restApi = "localhost:8080/rest/space/2";
             call(method, restApi);
         }
 
         function getLine(){
             var method = 'GET';
-            var restApi = "localhost:8080/rest/lines";
+            var restApi = "localhost:8080/rest/lines/1";
             call(method, restApi);
         }
 
         function call(method,api){
             var xhr = new XMLHttpRequest();
+            //xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     $('#resultMsg').html(xhr.responseText);
@@ -72,10 +77,13 @@
 </head>
 <body onload="draw()">
     <div id="resultMsg"></div>
-    <button type="button" onclick="insertPoint()">Insert Point</button><br>
+    <button type="button" onclick="insertPoint()">Insert Point</button>
+    x: <input type="text" id="x" name="x" style="width: 30px;">
+    y: <input type="text" id="y" name="y" style="width: 30px;"><br>
     <button type="button" onclick="getSpace()">Get space</button><br>
-    <button type="button" onclick="cleanSpace">Clean space</button><br>
-    <button type="button" onclick="getLine()">Get Line</button><br><br>
+    <button type="button" onclick="cleanSpace()">Clean space</button><br>
+    <button type="button" onclick="getLine()">Get Line</button>
+    Line: <input type="text" id="lineNumber" name="lineNumber" style="width: 30px;"><br>
 
     <div id="chartDiv"></div>
 
