@@ -1,9 +1,10 @@
-package it.salvo.example;
+package it.salvo.example.rest;
 
 import com.sun.jersey.api.container.httpserver.HttpServerFactory;
 import com.sun.net.httpserver.HttpServer;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 /**
@@ -13,19 +14,16 @@ import java.io.IOException;
 @Path("/space")
 public class SpaceREST {
 
-    // The Java method will process HTTP GET requests
     @GET
-    // The Java method will produce content identified by the MIME Media type "text/plain"
-    @Produces("text/plain")
+    @Produces(MediaType.APPLICATION_JSON)
     public String getSpace() {
         // Return some cliched textual content
         return "space";
     }
 
     @DELETE
-    // The Java method will produce content identified by the MIME Media type "text/plain"
     @Path("/{param}")
-    @Produces("text/plain")
+    @Produces(MediaType.APPLICATION_JSON)
     public String deleteSpace(@PathParam("param") String msg) {
         // Return some cliched textual content
         return "Clean space: "+msg;

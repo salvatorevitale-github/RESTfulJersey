@@ -4,88 +4,115 @@
     <meta charset="UTF-8">
     <title>Chart Example</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script type="application/javascript">
+
+        var array = [];
 
         function insertPoint(){
             var data = {};
             data.x = $('#x').val();
             data.y  = $('#y').val();
+            if(     !(data.x>=0 && data.x<=100) ||
+                    !(data.y>=0 && data.y<=100)    ){
+                alert('x e y possono essere compresi tra 0 e 100');
+                return;
+            }
             var method = 'POST';
-            var restApi = "localhost:8080/rest/point";
-            //var restApi = "localhost:8080/rest/point/"+JSON.stringify(data);
-            call(method, restApi);
+            var uri = "http://localhost:8080/rest/point";
+            var xhr = new XMLHttpRequest();
+            xhr.open(method, uri, true);
+            xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    var v = xhr.response;
+                    $('#resultMsg').html('add '+v);
+                    array.push(JSON.parse(v))
+                    draw();
+                }
+            }
+            xhr.send(JSON.stringify(data));
         }
 
         function getSpace(){
             var method = 'GET';
-            var restApi = "localhost:8080/rest/space";
+            var restApi = "http://localhost:8080/rest/space";
             call(method, restApi);
         }
 
         function cleanSpace(){
             var method = 'DELETE';
-            var restApi = "localhost:8080/rest/space/2";
+            var restApi = "http://localhost:8080/rest/space/2";
             call(method, restApi);
         }
 
         function getLine(){
             var method = 'GET';
-            var restApi = "localhost:8080/rest/lines/1";
+            var restApi = "http://localhost:8080/rest/lines/1";
             call(method, restApi);
         }
 
-        function call(method,api){
+        function call(method,uri, data){
             var xhr = new XMLHttpRequest();
-            //xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.open(method, uri, true);
+            xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
-                    $('#resultMsg').html(xhr.responseText);
-                    alert(xhr.responseText);
+                    var v = xhr.response;
+                    $('#resultMsg').html(v);
                 }
             }
-            xhr.open(method, 'http://'+api, true);
-            xhr.send(null);
+            xhr.send(JSON.stringify(data));
         }
 
         function draw(){
-            var trace1 = {
-                x: [1, 2, 3, 4],
-                y: [10, 15, 13, 17],
-                mode: 'markers'
-            };
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                zoomEnabled: true,
+                title:{
+                    text: "Point fo Pattern Recognition"
+                },
+                axisX: {
+                    title:"ascisse",
+                    minimum: -1,
+                    maximum: 101
+                },
+                axisY:{
+                    title: "ordinate",
+                    valueFormatString: "#,##0",
+                    minimum: -1,
+                    maximum: 101
+                },
+                data: [{
+                    type: "scatter",
+                    toolTipContent: "point</br><b>(x): </b>{x}<br/><b>(y): </b>{y}",
+                    dataPoints:
+                        array
+                }]
+            });
+            chart.render();
+        }
 
-            var trace2 = {
-                x: [2, 3, 4, 5],
-                y: [16, 5, 11, 10],
-                mode: 'lines'
-            };
-
-            var trace3 = {
-                x: [1, 2, 3, 4],
-                y: [12, 9, 15, 12],
-                mode: 'lines+markers'
-            };
-
-            var data = [ trace1, trace2, trace3 ];
-
-            var layout = {};
-
-            Plotly.newPlot('chartDiv', data, layout);
+        function soloNumeri(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
         }
     </script>
 </head>
 <body onload="draw()">
     <div id="resultMsg"></div>
     <button type="button" onclick="insertPoint()">Insert Point</button>
-    x: <input type="text" id="x" name="x" style="width: 30px;">
-    y: <input type="text" id="y" name="y" style="width: 30px;"><br>
+    x: <input type="text" id="x" name="x" style="width: 30px;" onkeypress="return soloNumeri(event);">
+    y: <input type="text" id="y" name="y" style="width: 30px;" onkeypress="return soloNumeri(event);"><br>
     <button type="button" onclick="getSpace()">Get space</button><br>
     <button type="button" onclick="cleanSpace()">Clean space</button><br>
-    <button type="button" onclick="getLine()">Get Line</button>
-    Line: <input type="text" id="lineNumber" name="lineNumber" style="width: 30px;"><br>
+    <button type="button" onclick="getLine()" disabled>Get Line</button>
+    Line: <input type="text" id="lineNumber" name="lineNumber" style="width: 30px;" disabled><br>
 
-    <div id="chartDiv"></div>
+    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 
 </body>
 </html>
